@@ -1,25 +1,41 @@
-from flask import Flask,jsonify
+from flask import Flask
 import simplejson 
 import json
 import optparse
+from pytelldus import td
 
 
 TSS_NAME="tellstick-services"
 app = Flask(__name__)
+td.init()
 
 
 methods=['GET']
 @app.route("/")
 def start():
 	"""Just the index request"""
-	return jsonify(status='running',status_url='/status')
+	return json.dumps(status_url='/status')
 
 
 methods=['GET']
 @app.route("/status")
 def status():
 	"""On status request return the list of all devices and their status"""
-	return "status"
+
+	result = []
+	number_of_devices = td.getNumberOfDevices()
+
+	if (number_of_devices >= 0):
+		for i in range(number_of_devices):
+			device_id = td.getDeviceId(i)
+			name = td.getName(device_id)
+			status = td.lastSentCommand(device_id, readable = True)
+			result.append({'deviceId':device_id,'deviceName':name,'status':status})
+
+		return json.dumps(result)
+	else:
+		# failed, return 503
+		return make_response(503)
 
 
 methods=['GET']
