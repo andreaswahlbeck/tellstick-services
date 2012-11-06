@@ -7,7 +7,7 @@ from pytelldus import td
 
 TSS_NAME="tellstick-services"
 app = Flask(__name__)
-td.init()
+td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
 
 
 
