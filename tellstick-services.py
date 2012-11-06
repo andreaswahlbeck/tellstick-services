@@ -10,15 +10,14 @@ app = Flask(__name__)
 td.init()
 
 
-methods=['GET']
-@app.route("/")
+
+@app.route("/", methods=['GET'])
 def start():
 	"""Just the index request"""
-	return json.dumps(status_url='/status')
+	return json.dumps({'status_url':'/status'})
 
 
-methods=['GET']
-@app.route("/status")
+@app.route("/status", methods=['GET'])
 def status():
 	"""On status request return the list of all devices and their status"""
 
@@ -28,9 +27,7 @@ def status():
 	if (number_of_devices >= 0):
 		for i in range(number_of_devices):
 			device_id = td.getDeviceId(i)
-			name = td.getName(device_id)
-			status = td.lastSentCommand(device_id, readable = True)
-			result.append({'deviceId':device_id,'deviceName':name,'status':status})
+			result.append(get_status_for_device(device_id))
 
 		return json.dumps(result)
 	else:
@@ -38,27 +35,37 @@ def status():
 		return make_response(503)
 
 
-methods=['GET']
-@app.route("/status-update")
-def update_status():
-	"""On status update request reread state from telldusd and the return status"""
-	return "will update status"
-
-
-methods=['GET']
-@app.route("/device/<int:device_id>")
+@app.route("/device/<int:device_id>", methods=['GET'])
 def device_status(device_id):
 	"""Get device status for device_id"""
-	app.logger.debug('checking logger')
-	return jsonify(device_id=device_id, status='on')
+	return json.dumps(get_status_for_device(device_id))
 
 
-methods=['POST']
-@app.route("/device/<int:device_id>/<command>")
+@app.route("/device/<int:device_id>/<command>", methods=['POST'])
 def controll_device(device_id, command):
 	"""Control device with device_id and command (on/off valid)"""
-	return "updating device %s with command %s" % device_id, command
+	supported_cmds = ['on', 'off']
+	if (command in supported_cmds):
+		if (command == 'on'):
+			rc = td.turnOn(device_id)
+		elif (command == 'off'):
+			rc = td.turnOff(device_id)
+		else:
+			rc = -1
 
+		if (rc == 0):
+			return json.dumps(get_status_for_device(device_id))
+		else:
+			return json.dumps({'error':'failed to execute command'})
+	
+	else:
+		return json.dumps({'error':'invalid command'})
+	
+
+def get_status_for_device(device_id):
+	name = td.getName(device_id)
+	status = td.lastSentCommand(device_id, readable = True)
+	return {'deviceId':device_id,'deviceName':name,'status':status}
 
 def init_opts():
 	usage = "Support the following arguments"
