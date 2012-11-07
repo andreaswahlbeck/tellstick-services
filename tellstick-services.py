@@ -2,12 +2,14 @@ from flask import Flask
 import simplejson 
 import json
 import optparse
-from pytelldus import td
+import pytelldus 
+import simulator
 
 
 TSS_NAME="tellstick-services"
+TEST_MODE=False
 app = Flask(__name__)
-td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
+#td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
 
 
 
@@ -74,6 +76,11 @@ def init_opts():
 	parser.add_option("-d", "--debug", 
 						action="store_true", dest="debug", 
 						default=False,help="Run in debug mode")
+
+	parser.add_option("-t", "--test", 
+						action="store_true", dest="testmode", 
+						default=False,help="Run in test mode, no interaction with telldusd")
+
 	return parser.parse_args()
 
 
@@ -83,7 +90,22 @@ def handle_opts():
 		print "starting in debug mode"
 		app.debug = True
 
+	if options.testmode:
+		print "starting in test mode, no interactin with telldus"
+		TEST_MODE = True
+
+
+
+def app_init():
+	if TEST_MODE:
+		td = simulator.td-sim
+		
+	else:
+		td = pytelldus.td
+		td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
+
 
 if __name__ == "__main__":
 	handle_opts()
+	app_init()
 	app.run()
