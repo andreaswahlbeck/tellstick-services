@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tellstick Services</title>
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <!-- <link href="static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet"> -->
+    <link href="static/css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Tellstick Controller</a>
+        </div>
+      </div>
+    </div>
+
+  <div class="container">    
+  {% for device in devices %}
+  
+    <div class="row">
+      <div class="span3">  
+        <div class="device-header">
+          <h3>{{device.deviceName}}</h3>
+        
+          <div class="row">
+            <div class="span1">Status: </div>
+            <div class="span1">{{device.status}}</div>
+
+            
+          </div>
+          <div class="row">
+            <div class="span1">
+              <button class="btn btn-mini btn-success" type="button">On</button>
+            </div>
+            <div class="span1">
+              <button class="btn btn-mini btn-danger" type="button">Off</button>
+            </div>
+            
+            
+          </div>
+        </div>
+
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+
+
+    <script src="static/js/jquery-1.8.2.min.js"></script>
+    <script src="static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/js/script.js"></script>
+  </body>
+</html>
