@@ -1,3 +1,3 @@
 [submodule "pytelldus"]
 	path = pytelldus
-	url = git@bitbucket.org:andreassvanberg/pytelldus.git
+	url = https://bitbucket.org/andreassvanberg/pytelldus.git
