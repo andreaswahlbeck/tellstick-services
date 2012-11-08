@@ -1,16 +1,13 @@
 from flask import Flask
-import simplejson 
+import simplejson
 import json
 import optparse
-import pytelldus 
-import simulator
+import sys
 
 
 TSS_NAME="tellstick-services"
 TEST_MODE=False
 app = Flask(__name__)
-#td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
-
 
 
 @app.route("/", methods=['GET'])
@@ -59,10 +56,10 @@ def controll_device(device_id, command):
 			return json.dumps(get_status_for_device(device_id))
 		else:
 			return json.dumps({'error':'failed to execute command'})
-	
+
 	else:
 		return json.dumps({'error':'invalid command'})
-	
+
 
 def get_status_for_device(device_id):
 	name = td.getName(device_id)
@@ -71,20 +68,21 @@ def get_status_for_device(device_id):
 
 def init_opts():
 	usage = "Support the following arguments"
-	
+
 	parser = optparse.OptionParser(usage = usage)
-	parser.add_option("-d", "--debug", 
-						action="store_true", dest="debug", 
+	parser.add_option("-d", "--debug",
+						action="store_true", dest="debug",
 						default=False,help="Run in debug mode")
 
-	parser.add_option("-t", "--test", 
-						action="store_true", dest="testmode", 
+	parser.add_option("-t", "--test",
+						action="store_true", dest="testmode",
 						default=False,help="Run in test mode, no interaction with telldusd")
 
 	return parser.parse_args()
 
 
 def handle_opts():
+	global TEST_MODE
 	(options, args) =init_opts()
 	if options.debug:
 		print "starting in debug mode"
@@ -95,14 +93,29 @@ def handle_opts():
 		TEST_MODE = True
 
 
-
 def app_init():
+	global TEST_MODE
+	global td
+
 	if TEST_MODE:
-		td = simulator.td-sim
-		
+		print "loading simulator"
+		import simulator
+		td = simulator.tdsim
+
 	else:
-		td = pytelldus.td
-		td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
+		try:
+			print "loading pytelldus"
+			import pytelldus
+			td = pytelldus.td
+			td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
+		except OSError:
+			if TEST_MODE:
+				# we're on a machine without telldus installed, ok if simulation mode
+				pass
+			else:
+				# exit since we can't work without telldusd
+				print "Can't load telldus libs"
+				sys.exit(1)
 
 
 if __name__ == "__main__":
