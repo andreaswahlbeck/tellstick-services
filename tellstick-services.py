@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,abort, redirect, url_for
 import simplejson
 import json
 import optparse
@@ -13,7 +13,7 @@ app = Flask(__name__)
 @app.route("/", methods=['GET'])
 def start():
 	"""Just the index request"""
-	return json.dumps({'status_url':'/status'})
+	return redirect('/static/index.html')
 
 
 @app.route("/status", methods=['GET'])
@@ -31,7 +31,7 @@ def status():
 		return json.dumps(result)
 	else:
 		# failed, return 503
-		return make_response(503)
+		abort(503)
 
 
 @app.route("/device/<int:device_id>", methods=['GET'])
