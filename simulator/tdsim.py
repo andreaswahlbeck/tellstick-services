@@ -54,6 +54,7 @@ def turnOff(intDeviceId):
 
 
 def update_device_status(intDeviceId, status):
+    print 'updating device %s to status %s' % (intDeviceId, status)
     for i in range(getNumberOfDevices()):
         if devices[i][0] == intDeviceId:
             devices[i][2] = status

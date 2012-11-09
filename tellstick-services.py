@@ -7,6 +7,7 @@ import sys
 
 TSS_NAME="tellstick-services"
 TEST_MODE=False
+EXT_MODE=True
 app = Flask(__name__)
 
 
@@ -43,11 +44,11 @@ def device_status(device_id):
 @app.route("/device/<int:device_id>/<command>", methods=['POST'])
 def controll_device(device_id, command):
 	"""Control device with device_id and command (on/off valid)"""
-	supported_cmds = ['on', 'off']
+	supported_cmds = ['ON', 'OFF','on','off']
 	if (command in supported_cmds):
-		if (command == 'on'):
+		if (command.upper() == 'ON'):
 			rc = td.turnOn(device_id)
-		elif (command == 'off'):
+		elif (command.upper() == 'OFF'):
 			rc = td.turnOff(device_id)
 		else:
 			rc = -1
@@ -78,11 +79,17 @@ def init_opts():
 						action="store_true", dest="testmode",
 						default=False,help="Run in test mode, no interaction with telldusd")
 
+	parser.add_option("-l", "--local",
+						action="store_true", dest="local_only",
+						default=False,help="Only run on localhost")
+
 	return parser.parse_args()
 
 
 def handle_opts():
 	global TEST_MODE
+	global EXT_MODE
+
 	(options, args) =init_opts()
 	if options.debug:
 		print "starting in debug mode"
@@ -91,6 +98,9 @@ def handle_opts():
 	if options.testmode:
 		print "starting in test mode, no interactin with telldus"
 		TEST_MODE = True
+
+	if options.local_only:
+		EXT_MODE = False
 
 
 def app_init():
@@ -121,4 +131,7 @@ def app_init():
 if __name__ == "__main__":
 	handle_opts()
 	app_init()
-	app.run()
+	if EXT_MODE:
+		app.run(host='0.0.0.0')
+	else:
+		app.run()

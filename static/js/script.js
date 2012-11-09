@@ -1,35 +1,33 @@
-$(document).ready(function(){
+$(document).bind('pageinit',function(){
 
-    console.log('getting units from telldus')
+    $( ".on-off-switch" ).each(function(index) {
+       var status = $(this).attr('data-devicestatus');
+       var deviceId = $(this).attr('data-deviceid');
+       console.log('Setting status of device: ' + deviceId + ':' + status);
+       $(this).val(status.toLowerCase()).slider('refresh');
 
-    // $.get('/status', function(data) {
-
-    //     console.log('Got data: ' + data);
-
-    //     devices = JSON.parse(data);
-
-    //     $.each(devices, function(i){
-    //         console.log(devices[i]);
-    //         var deviceDiv = $('<div />');
-    //         $(deviceDiv).append('<h2>' + devices[i].deviceId + '-' + devices[i].deviceName + '</h2>');
-    //         $(deviceDiv).append('<p>Status: ' + devices[i].status + '</p>');
-    //         $('#content-wrapper').append(deviceDiv);
-
-    //     });
-
-    // });
-
-
-    $('.basic').toggle({
-      onClick: function (event, status) {}, // Do something on status change if you want
-      text: {
-        enabled: false, // Change the enabled disabled text on the fly ie: 'ENABLED'
-        disabled: false // and for 'DISABLED'
-      },
-      style: {
-        enabled: 'primary', // default button styles like btn-primary, btn-info, btn-warning just remove the btn- part.
-        disabled: false // same goes for this, primary, info, warning, danger, success. 
-      }
     });
 
+    $( ".on-off-switch" ).bind( "change", function(event) {
+      var deviceId = $(this).attr('data-deviceid');
+      var status = $(this).attr('data-devicestatus');
+      var newStatus = status == 'ON' ? 'OFF':'ON';
+
+      var url = '/device/'+deviceId+'/'+newStatus;
+
+      $.post(url,function(data){
+        // var device = JSON.parse(data);
+        console.log('Got back: ' + data);
+        // var newStatus = device.status;
+        // console.log($('#device'+device.deviceId));
+        // console.log('Status after: ' + $('#device'+device.deviceId).attr('data-devicestatus'));
+        // $('#device'+device.deviceId).attr('data-devicestatus', newStatus);
+        // console.log('Status after: ' + $('#device'+device.deviceId).attr('data-devicestatus'));
+        //$('#device'+device.deviceId).val(newStatus.toLowerCase()).slider('refresh');
+
+      });
+      $(this).attr('data-devicestatus', newStatus);
+      console.log('Status after: ' + $(this).attr('data-devicestatus'));
+    });
 });
+
