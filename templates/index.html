@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title>Tellstick Controller</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="static/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css" />
-    <link href="static/css/style.css" rel="stylesheet">
   </head>
+
   <body>
 
   <div data-role="page">
 
     <div data-role="header">
+      <a href="#" id="refresh-button" data-icon="refresh" class="ui-btn-right">Update</a>
       <h1>Tellstick Controller</h1>
     </div>
+
     <div data-role="content">
       <ul data-role="listview">
         {% for device in devices %}
           <li>
             <h3 class="ui-li-heading">{{device.deviceName}}</h3>
-            <select name="flip-mini" id="device{{device.deviceId}}"
-                    class="on-off-switch" data-role="slider"
-                    data-mini="true" data-deviceid="{{device.deviceId}}" data-devicestatus="{{device.status}}">
-              <option value="off">Off</option>
-              <option value="on">On</option>
-            </select>
+
+            <p class="ui-li-aside ui-li-desc">
+              <select name="flip-mini" id="device{{device.deviceId}}"
+                      class="on-off-switch" data-role="slider"
+                      data-mini="true" data-deviceid="{{device.deviceId}}" data-devicestatus="{{device.status}}">
+                <option value="off">Off</option>
+                <option value="on">On</option>
+              </select>
+            </p>
+
           </li>
         {% endfor %}
         </ul>
+
+        <div data-role="popup" id="failed-popup" data-transition="slideup" data-theme="a">
+          <p class"failed-message">Failed<p>
+        </div>
+
     </div>
   </div>
     <script src="static/js/jquery-1.8.2.min.js"></script>

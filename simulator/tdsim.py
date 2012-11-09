@@ -44,8 +44,11 @@ def lastSentCommand(intDeviceId, methodsSupported = None, readable = False):
 
 
 def turnOn(intDeviceId):
-    update_device_status(intDeviceId,'ON')
-    return 0
+    if (intDeviceId != 3):
+        update_device_status(intDeviceId,'ON')
+        return 0
+    else:
+        return 1
 
 
 def turnOff(intDeviceId):

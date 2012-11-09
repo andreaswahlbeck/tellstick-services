@@ -56,7 +56,7 @@ def controll_device(device_id, command):
 		if (rc == 0):
 			return json.dumps(get_status_for_device(device_id))
 		else:
-			return json.dumps({'error':'failed to execute command'})
+			return json.dumps({'error':'failed to execute command','deviceId':device_id})
 
 	else:
 		return json.dumps({'error':'invalid command'})
