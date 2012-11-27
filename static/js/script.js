@@ -36,7 +36,7 @@ $(document).bind('pageinit',function(){
       $.post(url,function(data,deviceId,status){
         console.log('Got back: ' + data);
 
-        var device = JSON.parse(data);
+        var device = data;
 
         if (device.error) {
           console.log('got error back...');
@@ -55,7 +55,9 @@ $(document).bind('pageinit',function(){
 
     $("#refresh-button").bind('click', function() {
         $.get('/status',function(data) {
-            var devices = JSON.parse(data);
+            console.log(data);
+            var devices = data.items;
+            console.log(devices);
             $(devices).each(function(index){
               var status = devices[index].status;
               var deviceId = devices[index].deviceId;

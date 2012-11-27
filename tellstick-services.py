@@ -1,6 +1,5 @@
 from flask import Flask, abort, redirect, url_for, render_template
-import simplejson
-import json
+from flask import jsonify
 import optparse
 import sys
 
@@ -14,22 +13,17 @@ app = Flask(__name__)
 @app.route("/", methods=['GET'])
 def start():
 	"""Just the index request"""
-	return render_template('index.html', devices=json.loads(status()))
+	return render_template('index.html', devices=get_status())
 
 
 @app.route("/status", methods=['GET'])
 def status():
 	"""On status request return the list of all devices and their status"""
 
-	result = []
 	number_of_devices = td.getNumberOfDevices()
 
 	if (number_of_devices >= 0):
-		for i in range(number_of_devices):
-			device_id = td.getDeviceId(i)
-			result.append(get_status_for_device(device_id))
-
-		return json.dumps(result)
+		return jsonify(items=get_status())
 	else:
 		# failed, return 503
 		abort(503)
@@ -38,7 +32,7 @@ def status():
 @app.route("/device/<int:device_id>", methods=['GET'])
 def device_status(device_id):
 	"""Get device status for device_id"""
-	return json.dumps(get_status_for_device(device_id))
+	return jsonify(get_status_for_device(device_id))
 
 
 @app.route("/device/<int:device_id>/<command>", methods=['POST'])
@@ -54,12 +48,23 @@ def controll_device(device_id, command):
 			rc = -1
 
 		if (rc == 0):
-			return json.dumps(get_status_for_device(device_id))
+			return jsonify(get_status_for_device(device_id))
 		else:
-			return json.dumps({'error':'failed to execute command','deviceId':device_id})
+			return jsonify({'error':'failed to execute command','deviceId':device_id})
 
 	else:
-		return json.dumps({'error':'invalid command'})
+		return jsonify({'error':'invalid command'})
+
+def get_status():
+	result = []
+	number_of_devices = td.getNumberOfDevices()
+
+	if (number_of_devices >= 0):
+		for i in range(number_of_devices):
+			device_id = td.getDeviceId(i)
+			result.append(get_status_for_device(device_id))
+
+	return result
 
 
 def get_status_for_device(device_id):
