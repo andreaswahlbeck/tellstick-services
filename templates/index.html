@@ -20,7 +20,7 @@
       <ul data-role="listview">
         {% for device in devices %}
           <li>
-            <h3 class="ui-li-heading">{{device.deviceName}}</h3>
+            <h3 class="ui-li-heading">{{device.deviceName.decode("utf8")}}</h3>
 
             <p class="ui-li-aside ui-li-desc">
               <select name="flip-mini" id="device{{device.deviceId}}"
