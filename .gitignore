@@ -1,3 +1,4 @@
 worknotes.txt
 env
 build
+*.pyc

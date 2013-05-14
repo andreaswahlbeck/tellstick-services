@@ -124,13 +124,9 @@ def app_init():
 			td = pytelldus.td
 			td.init(defaultMethods = td.TELLSTICK_TURNON | td.TELLSTICK_TURNOFF)
 		except OSError:
-			if TEST_MODE:
-				# we're on a machine without telldus installed, ok if simulation mode
-				pass
-			else:
-				# exit since we can't work without telldusd
-				print "Can't load telldus libs"
-				sys.exit(1)
+			# exit since we can't work without telldusd
+			print "Can't load telldus libs"
+			sys.exit(1)
 
 
 if __name__ == "__main__":
