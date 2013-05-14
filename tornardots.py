@@ -9,5 +9,5 @@ if __name__ == "__main__":
 	app_init()
 	
 	http_server = HTTPServer(WSGIContainer(app))
-	http_server.listen(5000)
+	http_server.listen(5000, '0.0.0.0')
 	IOLoop.instance().start()
