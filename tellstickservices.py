@@ -32,7 +32,10 @@ def devices():
 @app.route("/devices/<int:device_id>", methods=['GET'])
 def device(device_id):
   """Get device status for device_id"""
-  return jsonify(get_device_info(device_id))
+  if (existing_device(device_id)):
+    return jsonify(get_device_info(device_id))
+  else:
+    return make_response(jsonify({'error':'invalid device_id'}), 400)
 
 
 @app.route("/devices/<int:device_id>/<command>", methods=['POST'])
