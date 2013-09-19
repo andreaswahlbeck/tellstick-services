@@ -4,8 +4,8 @@
 
 This is a small REST interface for controling configured tellstick devices.
 
-Uses a python wrapper for [libtelldus-core](http://developer.telldus.se/doxygen/index.html) 
-called [pytelldus](https://bitbucket.org/andreassvanberg/pytelldus). 
+Uses a python wrapper for [libtelldus-core](http://developer.telldus.se/doxygen/index.html)
+called [pytelldus](https://bitbucket.org/andreassvanberg/pytelldus).
 
 At the moment only turning on and off is supported.
 
@@ -45,13 +45,13 @@ Sample request using curl when running in test mode using a simulator:
 
 **Get status of all devices:**
 <pre>
-curl http://localhost:5000/status
+curl http://localhost:5000/devices
 </pre>
 **Get status of device 1:**
 <pre>
-curl http://localhost:5000/device/1
+curl http://localhost:5000/devices/1
 </pre>
 **Turn on device 1:**
 <pre>
-curl -X POST http://localhost:5000/device/1/on
+curl -X POST http://localhost:5000/devices/1/on
 </pre>

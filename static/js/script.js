@@ -31,30 +31,23 @@ $(document).bind('pageinit',function(){
       var status = $(this).attr('data-devicestatus');
       var newStatus = status == 'ON' ? 'OFF':'ON';
 
-      var url = '/device/'+deviceId+'/'+newStatus;
+      var url = '/devices/'+deviceId+'/'+newStatus;
 
       $.post(url,function(data,deviceId,status){
         console.log('Got back: ' + data);
-
         var device = data;
-
-        if (device.error) {
+        $('#device'+device.deviceId).attr('data-devicestatus', device.status);
+      }).fail(function(data,device){
           console.log('got error back...');
-          var oldStatus = $('#device'+device.deviceId).attr('data-devicestatus');
-
-          console.log('resoring status: ' + oldStatus);
-          $('#device'+device.deviceId).val(oldStatus.toLowerCase()).slider('refresh');
+          console.log('restoring status: ' + status + ' for device:' + deviceId);
+          $('#device'+deviceId).val(status.toLowerCase()).slider('refresh');
           showFailed();
-        } else {
-          $('#device'+device.deviceId).attr('data-devicestatus', device.status);
-        }
-
       });
 
     });
 
     $("#refresh-button").bind('click', function() {
-        $.get('/status',function(data) {
+        $.get('/devices',function(data) {
             console.log(data);
             var devices = data.items;
             console.log(devices);
