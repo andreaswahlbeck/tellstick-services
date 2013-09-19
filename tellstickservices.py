@@ -62,7 +62,7 @@ def controll_device(device_id, command):
 
 def existing_device(device_id):
   for device in get_devices():
-    if (device.device_id == device_id):
+    if (device['deviceId'] == device_id):
       return True
   return False
 
@@ -83,6 +83,7 @@ def get_device_info(device_id):
   name = td.getName(device_id)
   status = td.lastSentCommand(device_id, readable = True)
   return {'deviceId':device_id,'deviceName':name,'status':status}
+
 
 def init_opts():
   usage = "Support the following arguments"
