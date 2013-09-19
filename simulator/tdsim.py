@@ -29,10 +29,10 @@ def getDeviceIdFromStr(s):
 
 def getName(deviceId):
   for i in devices.keys():
-    if devices[i][0] == deviceId:
+    if (devices[i][0] == deviceId):
       return devices[i][1]
-    else:
-      return unknown[1]
+
+  return unknown[1]
 
 
 def lastSentCommand(intDeviceId, methodsSupported = None, readable = False):
